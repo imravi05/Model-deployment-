@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coffee Quality Prediction</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f5f5f5; }
+        h1 { text-align: center; }
+        form { max-width: 400px; margin: auto; padding: 20px; background-color: white; border-radius: 10px; box-shadow: 0px 0px 15px rgba(0,0,0,0.1); }
+        label { display: block; margin-top: 10px; font-weight: bold; }
+        input, select { width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ccc; border-radius: 5px; }
+        button { width: 100%; padding: 10px; margin-top: 15px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background-color: #45a049; }
+        #result { margin-top: 20px; text-align: center; font-size: 1.2em; }
+    </style>
+</head>
+<body>
+
+<h1>Coffee Quality Prediction</h1>
+
+<form id="prediction-form">
+    <label for="acidity">Acidity (3.5 - 5.0):</label>
+    <input type="number" id="acidity" name="acidity" step="0.1" required>
+
+    <label for="caffeine">Caffeine (0.8 - 2.0):</label>
+    <input type="number" id="caffeine" name="caffeine" step="0.1" required>
+
+    <label for="aroma">Aroma (1 - 10):</label>
+    <input type="number" id="aroma" name="aroma" required>
+
+    <label for="texture">Texture (1 - 10):</label>
+    <input type="number" id="texture" name="texture" required>
+
+    <label for="bitterness">Bitterness (1 - 10):</label>
+    <input type="number" id="bitterness" name="bitterness" required>
+
+    <label for="sweetness">Sweetness (1 - 10):</label>
+    <input type="number" id="sweetness" name="sweetness" required>
+
+    <label for="body">Body (1 - 10):</label>
+    <input type="number" id="body" name="body" required>
+
+    <label for="aftertaste">Aftertaste (1 - 10):</label>
+    <input type="number" id="aftertaste" name="aftertaste" required>
+
+    <label for="color">Color (1 - 10):</label>
+    <input type="number" id="color" name="color" required>
+
+    <label for="roast_level">Roast Level:</label>
+    <select id="roast_level" name="roast_level">
+        <option value="light">Light</option>
+        <option value="medium">Medium</option>
+        <option value="dark">Dark</option>
+    </select>
+
+    <button type="button" onclick="predictQuality()">Predict Quality</button>
+</form>
+
+<div id="result"></div>
+
+<script>
+    async function predictQuality() {
+        const formData = {
+            acidity: parseFloat(document.getElementById('acidity').value),
+            caffeine: parseFloat(document.getElementById('caffeine').value),
+            aroma: parseFloat(document.getElementById('aroma').value),
+            texture: parseFloat(document.getElementById('texture').value),
+            bitterness: parseFloat(document.getElementById('bitterness').value),
+            sweetness: parseFloat(document.getElementById('sweetness').value),
+            body: parseFloat(document.getElementById('body').value),
+            aftertaste: parseFloat(document.getElementById('aftertaste').value),
+            color: parseFloat(document.getElementById('color').value),
+            roast_level: document.getElementById('roast_level').value
+        };
+
+        try {
+            const response = await fetch('/predict', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            });
+            const result = await response.json();
+            document.getElementById('result').innerText = `Predicted Quality: ${result.quality_label}`;
+        } catch (error) {
+            document.getElementById('result').innerText = 'Error: Unable to get prediction';
+            console.error('Error:', error);
+        }
+    }
+</script>
+
+</body>
+</html>
